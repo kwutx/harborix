@@ -38,6 +38,7 @@ coinship（家計簿アプリ）のデータベース設計を定義する。
 | account_type | VARCHAR(20) | NO | 種別 |
 | balance | DECIMAL(12,2) | NO | 残高 |
 | icon | VARCHAR(100) | YES | アイコン |
+| currency | VARCHAR(3) | NO | 通貨コード（デフォルト: JPY） |
 | is_shared | BOOLEAN | NO | 共有フラグ |
 | sort_order | INTEGER | NO | 表示順 |
 | created_at | TIMESTAMP | NO | 作成日時 |
@@ -54,6 +55,7 @@ coinship（家計簿アプリ）のデータベース設計を定義する。
 | payment_type | VARCHAR(20) | NO | 種別 |
 | closing_day | INTEGER | YES | 締め日 |
 | payment_day | INTEGER | YES | 支払日 |
+| sort_order | INTEGER | NO | 表示順 |
 | created_at | TIMESTAMP | NO | 作成日時 |
 | updated_at | TIMESTAMP | NO | 更新日時 |
 
@@ -66,7 +68,8 @@ coinship（家計簿アプリ）のデータベース設計を定義する。
 | account_id | UUID | NO | 口座ID (FK) |
 | payment_method_id | UUID | YES | 支払い方法ID (FK) |
 | category_id | UUID | NO | カテゴリID (FK) |
-| transaction_type | VARCHAR(20) | NO | 種別 (income/expense) |
+| to_account_id | UUID | YES | 振替先口座ID (FK、振替時のみ) |
+| transaction_type | VARCHAR(20) | NO | 種別 (income/expense/transfer) |
 | amount | DECIMAL(12,2) | NO | 金額 |
 | date | DATE | NO | 取引日 |
 | memo | TEXT | YES | メモ |
@@ -98,6 +101,7 @@ coinship（家計簿アプリ）のデータベース設計を定義する。
 | invitee_id | UUID | YES | 被招待者ID (FK) |
 | token | VARCHAR(100) | NO | 招待トークン |
 | status | VARCHAR(20) | NO | ステータス |
+| expires_at | TIMESTAMP | YES | 招待有効期限 |
 | created_at | TIMESTAMP | NO | 作成日時 |
 | updated_at | TIMESTAMP | NO | 更新日時 |
 
@@ -145,7 +149,21 @@ erDiagram
 | partnerships | token | UNIQUE |
 | partnerships | inviter_id, invitee_id | UNIQUE |
 
+## セキュリティ
+
+### パートナー招待トークン
+
+| 項目 | 方針 |
+| ---- | ---- |
+| トークン生成 | 暗号学的に安全な乱数（UUID v4等） |
+| トークン長 | 最低32文字 |
+| 有効期限 | 72時間（expires_atで管理） |
+| レート制限 | 招待リンク生成は1ユーザーあたり10件/時間 |
+
 ## 変更履歴
 
+- 2026-02-12: accounts にcurrency追加、payment_methodsにsort_order追加
+- 2026-02-12: transactionsにtransfer対応（to_account_id）追加
+- 2026-02-12: partnershipsにexpires_at追加、招待トークンセキュリティ追加
 - 2026-02-12: Supabase PostgreSQL、RLSを設計方針に追加
 - 2026-02-11: 初版作成（テンプレート）

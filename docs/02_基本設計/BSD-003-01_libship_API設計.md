@@ -9,7 +9,7 @@ libship（読書管理アプリ）のAPI設計を定義する。Next.js App Rout
 | 項目 | 方針 |
 | ---- | ---- |
 | スタイル | Next.js Server Actions |
-| 認証 | AWS Cognito JWT（Cookie） |
+| 認証 | AWS Cognito JWT（サブドメイン共有httpOnly Cookie） |
 | バリデーション | Zod |
 | データ取得 | React Server Components |
 
@@ -84,12 +84,14 @@ app/
 ```typescript
 // lib/auth.ts
 import { cookies } from 'next/headers'
-import { verifyToken } from '@/lib/cognito'
+import { verifyCognitoToken } from '@/lib/cognito'
 
 export async function getUser() {
-  const token = cookies().get('accessToken')?.value
+  const cookieStore = await cookies()
+  const token = cookieStore.get('harborix_access_token')?.value
   if (!token) return null
-  return verifyToken(token)
+  // Cognito公開鍵で署名検証・有効期限確認
+  return verifyCognitoToken(token)
 }
 ```
 
@@ -137,5 +139,6 @@ type ActionResult<T> =
 
 ## 変更履歴
 
+- 2026-02-12: Cookie認証をサブドメイン共有httpOnly Cookie方式に更新
 - 2026-02-12: Server Actionsベースに全面改訂
 - 2026-02-11: 初版作成（テンプレート）
