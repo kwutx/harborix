@@ -64,8 +64,10 @@ libship（読書管理アプリ）のデータベース設計を定義する。
 
 | カラム | 型 | NULL | 説明 |
 | ------ | -- | ---- | ---- |
+| id | UUID | NO | 主キー |
 | book_id | UUID | NO | 本ID (FK) |
 | category_id | UUID | NO | カテゴリID (FK) |
+| created_at | TIMESTAMP | NO | 作成日時 |
 
 ### reviews
 
@@ -138,10 +140,11 @@ erDiagram
 | books | user_id | INDEX |
 | books | isbn | INDEX |
 | books | status | INDEX |
-| book_categories | book_id, category_id | PRIMARY |
+| book_categories | book_id, category_id | UNIQUE |
 | quotes | book_id | INDEX |
 
 ## 変更履歴
 
+- 2026-02-12: book_categoriesにid、created_atを追加（REQ-003-05と統一）
 - 2026-02-12: Supabase PostgreSQL、RLSを設計方針に追加
 - 2026-02-11: 初版作成（テンプレート）

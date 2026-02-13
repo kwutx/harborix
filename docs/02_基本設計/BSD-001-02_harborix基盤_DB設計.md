@@ -21,6 +21,7 @@ harborix基盤のデータベース設計を定義する。
 | users | ユーザー情報 |
 | apps | アプリ情報 |
 | user_settings | ユーザー設定 |
+| user_app_settings | ユーザーアプリ設定 |
 
 ## Cognito連携
 
@@ -42,6 +43,7 @@ usersテーブルはAWS Cognitoと連携する。
 | email | VARCHAR(255) | NO | メールアドレス |
 | name | VARCHAR(100) | YES | 表示名 |
 | avatar_url | TEXT | YES | アバター画像URL |
+| is_admin | BOOLEAN | NO | 管理者フラグ（デフォルト: false） |
 | created_at | TIMESTAMP | NO | 作成日時 |
 | updated_at | TIMESTAMP | NO | 更新日時 |
 
@@ -69,17 +71,32 @@ usersテーブルはAWS Cognitoと連携する。
 | created_at | TIMESTAMP | NO | 作成日時 |
 | updated_at | TIMESTAMP | NO | 更新日時 |
 
+### user_app_settings
+
+| カラム | 型 | NULL | 説明 |
+| ------ | -- | ---- | ---- |
+| id | UUID | NO | 主キー |
+| user_id | UUID | NO | ユーザーID (FK) |
+| app_id | UUID | NO | アプリID (FK) |
+| is_visible | BOOLEAN | NO | 表示/非表示 |
+| sort_order | INTEGER | YES | ユーザー個別の並び順 |
+| created_at | TIMESTAMP | NO | 作成日時 |
+| updated_at | TIMESTAMP | NO | 更新日時 |
+
 ## ER図
 
 ```mermaid
 erDiagram
     users ||--o| user_settings : has
+    users ||--o{ user_app_settings : has
+    apps ||--o{ user_app_settings : has
 
     users {
         UUID id PK
         VARCHAR email
         VARCHAR name
         TEXT avatar_url
+        BOOLEAN is_admin
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
@@ -103,6 +120,16 @@ erDiagram
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
+
+    user_app_settings {
+        UUID id PK
+        UUID user_id FK
+        UUID app_id FK
+        BOOLEAN is_visible
+        INTEGER sort_order
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
 ```
 
 ## インデックス
@@ -112,8 +139,10 @@ erDiagram
 | users | email | UNIQUE |
 | apps | slug | UNIQUE |
 | user_settings | user_id | UNIQUE |
+| user_app_settings | user_id, app_id | UNIQUE |
 
 ## 変更履歴
 
+- 2026-02-12: usersにis_adminフラグ追加、user_app_settingsテーブル追加
 - 2026-02-12: Supabase PostgreSQL、Cognito連携を記載
 - 2026-02-11: 初版作成（テンプレート）
