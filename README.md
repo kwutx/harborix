@@ -18,9 +18,9 @@ harborix（港）
 
 | アプリ | 概要 | フロントエンド | バックエンド |
 | ------ | ---- | -------------- | ------------ |
-| harborix基盤 | ダッシュボード・認証・共通UI | React + tRPC | Node.js (TypeScript) |
+| harborix基盤 | ダッシュボード・認証・共通UI | React + tRPC | Node.js (Fastify + tRPC) |
 | coinship | 家計簿（パートナー共有対応） | React | Rust (Axum) |
-| libship | 読書管理（ISBN検索・読書記録） | Next.js (App Router) | Next.js API Routes |
+| libship | 読書管理（ISBN検索・読書記録） | Next.js (App Router) | Next.js Server Actions |
 | fanship | 推し活管理（イベント・グッズ・支出） | React | Go (Gin) |
 
 ## 技術スタック
@@ -51,10 +51,10 @@ harborix/
 ├── packages/
 │   ├── ui/              # @harborix/ui - 共通UIライブラリ
 │   ├── harborix-web/    # ダッシュボード (React + tRPC)
-│   ├── harborix-api/    # ダッシュボードAPI (Node.js + tRPC)
+│   ├── harborix-api/    # ダッシュボードAPI (Node.js + Fastify + tRPC)
 │   ├── coinship-web/    # 家計簿フロント (React)
 │   ├── coinship-api/    # 家計簿API (Rust + Axum)
-│   ├── libship/         # 読書管理 (Next.js App Router)
+│   ├── libship/         # 読書管理 (Next.js App Router + Server Actions)
 │   ├── fanship-web/     # 推し活フロント (React)
 │   └── fanship-api/     # 推し活API (Go + Gin)
 ├── infra/               # Terraform
@@ -68,6 +68,7 @@ harborix/
 
 | フェーズ | ディレクトリ | プレフィックス | 状態 |
 | -------- | ------------ | -------------- | ---- |
+| 管理 | `docs/00_管理/` | - | 作成中 |
 | 要件定義 | `docs/01_要件定義/` | REQ-XXX_ | 完了 |
 | 基本設計 | `docs/02_基本設計/` | BSD-XXX_ | 完了 |
 | 詳細設計 | `docs/03_詳細設計/` | DSD-XXX_ | 未着手 |
@@ -79,6 +80,7 @@ harborix/
 
 | ID | 内容 |
 | -- | ---- |
+| REQ-000 | 共通（非機能要件） |
 | REQ-001 | harborix基盤（概要・機能一覧・ユースケース・画面一覧・データ一覧） |
 | REQ-002 | coinship（概要・機能一覧・ユースケース・画面一覧・データ一覧） |
 | REQ-003 | libship（概要・機能一覧・ユースケース・画面一覧・データ一覧） |
@@ -88,7 +90,7 @@ harborix/
 
 | ID | 内容 |
 | -- | ---- |
-| BSD-000 | 共通（技術スタック・アーキテクチャ・UI設計） |
+| BSD-000 | 共通（技術スタック・アーキテクチャ・UI設計・セキュリティ設計・インフラ設計） |
 | BSD-001 | harborix基盤（API設計・DB設計・画面設計） |
 | BSD-002 | coinship（API設計・DB設計・画面設計） |
 | BSD-003 | libship（API設計・DB設計・画面設計） |
